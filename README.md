@@ -1,4 +1,6 @@
+<div align=center>
 <img width="100px" src="./src/logo.png" align="center" alt="logo" />
+</div>
 <h2  align="center">Auto Kaggle DataSets Visualization Project</h2>
 <p  align="center">自动处理可视化kaggle竞赛数据集</p>
 <div  align="center">
