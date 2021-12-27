@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DataVisualization</title>
+    <link rel="shortcut icon" href="./logo.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript" src="js/axios.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="js/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="js/purple-passion.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="main">
+    <el-upload
+            ref="upload"
+            class="upload-demo"
+            action="http://127.0.0.1:5000/upload"
+            :on-success="handleAvatarSuccess">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip" style="position:absolute;top:1%; left: 5%; color:white">只能上传csv/xlsx文件</div>
+    </el-upload>
+
+    <chart1 @trans="transform" id-plot="1" :get-plot="getPlot" url="http://127.0.0.1:5000/frequency"
+            msg="各列top1数据占比(字符串类型)">
+    </chart1>
+
+    <chart2 @trans="transform" id-plot="2" :get-plot="getPlot" url="http://127.0.0.1:5000/distribute" msg="数据分布">
+    </chart2>
+
+    <chart3 @trans="transform" id-plot="3" :get-plot="getPlot" url="http://127.0.0.1:5000/dataset_3d_chart"
+            msg="数据集3d分布展示">
+    </chart3>
+
+    <chart4 @trans="transform" id-plot="4" :get-plot="getPlot" url="http://127.0.0.1:5000/info" msg="数据信息展示">
+    </chart4>
+
+    <chart5 @trans="transform" id-plot="5" :get-plot="getPlot" url="http://127.0.0.1:5000/boxplot" msg="数据各列箱型图展示">
+    </chart5>
+
+    <chart6 @trans="transform" id-plot="6" :get-plot="getPlot" url="http://127.0.0.1:5000/parallelPlot" msg="平行图数据展示">
+    </chart6>
+
+    <el-pagination
+            style="position:absolute;left: 67.5%;right: 5%;width: 30%;bottom: 0%;"
+            background
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next"
+            :total="pageComponent.length"
+            :page-size="2">
+    </el-pagination>
+</div>
+</body>
+<script type="text/javascript" src="js/script.js"></script>
+</html>

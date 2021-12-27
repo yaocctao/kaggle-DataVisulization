@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DataVisualization</title>
+    <link rel="shortcut icon" href="./logo.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript" src="js/axios.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="js/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="js/purple-passion.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js"></script>
+</head>
+<body>
+<div id="main">
+    <el-upload
+            class="upload-demo"
+            drag
+            action="http://127.0.0.1:5000/upload"
+            multiple style="position:absolute;bottom: 40%;left: 40%"
+            :on-success="handleAvatarSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div slot="tip" class="el-upload__tip" style="position:absolute;top:1%; left: 5%; color:white">只能上传csv/xlsx文件</div>
+    </el-upload>
+</div>
+</body>
+<script type="text/javascript" src="js/script.js"></script>
+</html>
