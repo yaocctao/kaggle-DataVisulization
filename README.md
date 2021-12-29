@@ -223,7 +223,172 @@ pip安装好需要的环境包后
 
 ## 快速添加自定义图例
 
+项目路径介绍
 
+- processData
+  - files (上传文件存储的路径)
+  - testData(用来测试的数据)
+  - DataVisualization.py(用于数据处理)
+- src
+  - README.md依赖图片
+- static
+  - css
+    - fonts(element 工具字体)
+    - index.css(element css)
+    - style.css(自定义 css code)
+  - js
+    - axios.min.js(vue ajax请求)
+    - echarts.min.js(echarts 绘图)
+    - echarts-gl.min.js(echarts 3D图)
+    - index.js(element工具包js)
+    - jquery.min.js
+    - purple-passion.js(echarts 主题)
+    - script.js(vue 实现code)
+    - vue.js(vue js)
+  - logo.svg
+- templates
+  - index.html(图表gallery)
+  - main.html(上传文件界面)
+- main.py(flask后端请求url)
+- README.md
+
+了解了工程路径后我们来看一下如何添加自定义的图表
+
+以添加chart7图表为例
+
+#### step1
+
+在script中添加新的图表标签chart7()
+
+```js
+//chart7为你定义的图表的标签名字
+Vue.component('chart7', {
+    template: "<div v-bind:class='classObject'  v-bind:style='{display:show}' :id='\"chart\"+idPlot'>{{msg}}<div :id='idPlot'></div></div>",
+    props: {
+        getPlot: {type: Function},
+        url: {type: String},
+        idPlot: {type: String},
+        msg: {type: String}
+    },
+    data: function () {
+        return {
+            classObject: {
+                box1: false,
+                box2: true,
+                box3: false
+            },
+            index: null,
+            show: 'none',
+        }
+    },
+    methods: {
+        chart: function (id = '7', dataInit) {
+            var chartDom = document.getElementById(id);
+            chartDom.style.width = '100%';
+            chartDom.style.height = '90%';
+
+            if (dataInit !== false) {
+                this.myChart = echarts.init(chartDom, 'purple-passion');
+				//你绘制的图表内容
+				//------------------------
+				//你绘制的echarts的代码内容
+				
+				//------------------------
+                this.myChart.setOption(option);
+
+                var that = this
+                this.index = this.$parent.pageComponent.length
+                if ((this.index + 1) % 2 === 0) {
+                    this.classObject.box1 = false;
+                    this.classObject.box2 = false;
+                    this.classObject.box3 = true;
+                } else {
+                    this.classObject.box1 = false;
+                    this.classObject.box2 = true;
+                    this.classObject.box3 = false;
+                }
+                this.$parent.pageComponent.push(this)
+                this.myChart.getZr().on('click', function (params) {
+                    that.$emit('trans', that);
+                });
+            }
+
+        }
+    },
+    mounted: function () {
+        this.getPlot(this.url, this.idPlot, this.chart)
+    }
+})
+```
+
+#### step2
+
+在index.html中添加\<chart7\>标签
+
+```js
+//接口说明@trans为动画效果实现的函数，ip-plot为对应图表的dom id需具有唯一性，url为数据获取的请求连接，msg为前端显示的图表title
+<chart7 @trans="transform" id-plot="7" :get-plot="getPlot" url="http://127.0.0.1:5000/line" msg="key键不同列数据展示">
+</chart7>
+```
+
+#### step3
+
+在DataVisualization.py中
+
+```python
+class Pipeline():
+    def __init__(self, path):
+        self.data = self.read_data(path)
+        self.dataInfo = self.get_data_info()
+        self.dataCount_NanCount = [int(self.data.count().max()), int(self.data.isna().sum().max())]
+        # deal the missing value to str 'null'
+        self.data = self.data.fillna(value='null')
+    #............
+    #............
+    #............
+    #添加获取数据的实现方法
+	def get_line(self) -> Union[Dict, None]:
+        try:
+            dataDict = {}
+            data = self.data
+            unique = self.data.nunique()
+            xDataColumn = unique[unique == self.dataCount_NanCount[0]].index[0]
+            xData =[float(d) for d in  data[xDataColumn].to_list()]
+            data = data.drop(xDataColumn, axis=1)
+            numData = data.select_dtypes(include=["int64", "int32", "float32", "float"])
+            columnsNames = numData.columns.to_list()
+            numData = numData.T.to_numpy()
+            dataList = []
+            for row in numData:
+                rows = []
+                for cell in row:
+                    rows.append(float(cell))
+                dataList.append(rows)
+            dataDict['columns'] = columnsNames
+            dataDict['xName'] = xDataColumn
+            dataDict['data'] = dataList
+            dataDict['xData'] = xData
+        except:
+            return None
+        if dataDict == {}:
+            return None
+        return dataDict
+```
+
+在main.py中
+
+```python
+@app.route('/line')
+def line():
+    result = pipeline.get_line()
+    if result == None:
+        return 'false'
+    else:
+        #必须要有jsonify处理返回的数据为json否则前端收不到数据会报错
+        return jsonify(result)
+```
+
+添加数据获取的请求链接
 
 ## Docker 一键式快速部署
 

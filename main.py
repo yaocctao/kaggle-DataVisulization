@@ -19,7 +19,7 @@ app.logger.setLevel(DEBUG)
 # must set variable_start_string = '[[' or other, because Flask and vue have a syntax conflict
 app.jinja_env.variable_start_string = '[['
 app.jinja_env.variable_end_string = ']]'
-UPLOAD_FOLDER = './processData/test'
+UPLOAD_FOLDER = './processData/files'
 ALLOWED_EXTENSIONS = {'csv', 'xlsx'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -136,4 +136,4 @@ def line():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0',port=8787)
+    app.run(debug=True)

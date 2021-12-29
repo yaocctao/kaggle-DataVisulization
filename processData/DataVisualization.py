@@ -137,7 +137,7 @@ class Pipeline():
             data = self.data
             unique = self.data.nunique()
             xDataColumn = unique[unique == self.dataCount_NanCount[0]].index[0]
-            xData =[float(d) for d in  data[xDataColumn].to_list()]
+            xData = [float(d) for d in data[xDataColumn].to_list()]
             data = data.drop(xDataColumn, axis=1)
             numData = data.select_dtypes(include=["int64", "int32", "float32", "float"])
             columnsNames = numData.columns.to_list()

@@ -22,7 +22,8 @@
             action="http://127.0.0.1:5000/upload"
             :on-success="handleAvatarSuccess">
         <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip" style="position:absolute;top:1%; left: 5%; color:white">只能上传csv/xlsx文件</div>
+        <div slot="tip" class="el-upload__tip" style="position:absolute;top:1%; left: 5%; color:white">只能上传csv/xlsx文件
+        </div>
     </el-upload>
 
     <chart1 @trans="transform" id-plot="1" :get-plot="getPlot" url="http://127.0.0.1:5000/frequency"
