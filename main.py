@@ -7,32 +7,36 @@
 @Date    ：2021/12/27 19:16
 '''
 from processData.DataVisualization import Pipeline
-from flask import Flask, render_template, jsonify,request,flash,redirect,url_for
+from flask import Flask, render_template, jsonify, request, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import sys
 from logging import DEBUG
+
 # must set  static_url_path='' ,otherwise flask can't read the static files
 app = Flask(__name__, static_url_path='')
-app.logger.setLevel ( DEBUG )
+app.logger.setLevel(DEBUG)
 # must set variable_start_string = '[[' or other, because Flask and vue have a syntax conflict
 app.jinja_env.variable_start_string = '[['
 app.jinja_env.variable_end_string = ']]'
 UPLOAD_FOLDER = './processData/test'
-ALLOWED_EXTENSIONS = {'csv','xlsx'}
+ALLOWED_EXTENSIONS = {'csv', 'xlsx'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 path = None
+
 
 @app.route('/main')
 def main():
     return render_template("main.html")
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/upload',methods=['POST'])
+
+@app.route('/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -50,21 +54,20 @@ def upload():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             global path
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            return redirect(url_for("index",path=path),code=302)
-            # return render_template("index.html")
-    # return render_template('main.html')
+            return redirect(url_for("index", path=path), code=302)
+
 
 @app.route('/')
 def index():
     if path == None:
-        # return render_template("index.html")
         return redirect('main')
     else:
         global pipeline
         pipeline = Pipeline(path)
 
         print(path, file=sys.stderr)
-        return render_template("index.html",file=True)
+        return render_template("index.html", file=True)
+
 
 @app.route('/dataset_3d_chart')
 def dataset_3d_chart():
@@ -123,5 +126,14 @@ def parallelPlot():
         return jsonify(result)
 
 
+@app.route('/line')
+def line():
+    result = pipeline.get_line()
+    if result == None:
+        return 'false'
+    else:
+        return jsonify(result)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=8787)

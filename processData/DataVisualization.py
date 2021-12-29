@@ -16,7 +16,7 @@ class Pipeline():
         self.data = self.read_data(path)
         self.dataInfo = self.get_data_info()
         self.dataCount_NanCount = [int(self.data.count().max()), int(self.data.isna().sum().max())]
-        #deal the missing value to str 'null'
+        # deal the missing value to str 'null'
         self.data = self.data.fillna(value='null')
 
     def read_data(self, path: str) -> pd.DataFrame:
@@ -80,7 +80,8 @@ class Pipeline():
             dataDict = dict()
             unique = data.nunique()
             datas = {'names': [], 'datas': []}
-            unique = dict(sorted(unique[(unique < self.dataCount_NanCount[0]) & (unique > 5)].items(), key=lambda x: x[1])[0:2])
+            unique = dict(
+                sorted(unique[(unique < self.dataCount_NanCount[0]) & (unique > 5)].items(), key=lambda x: x[1])[0:2])
 
             for u in unique.keys():
                 datas['names'].append(data.groupby(u).count().index.to_list())
@@ -130,12 +131,29 @@ class Pipeline():
 
         return result
 
-
-if __name__ == '__main__':
-    path = './testData/Walmart.csv'
-    pipeline = Pipeline(path)
-    # pipeline.get_data_freq()
-    # pipeline.get_dataset_3d_chart()
-    # pipeline.get_data_describe()
-    # pipeline.get_boxplot()
-    pipeline.get_parallelPlot()
+    def get_line(self) -> Union[Dict, None]:
+        try:
+            dataDict = {}
+            data = self.data
+            unique = self.data.nunique()
+            xDataColumn = unique[unique == self.dataCount_NanCount[0]].index[0]
+            xData =[float(d) for d in  data[xDataColumn].to_list()]
+            data = data.drop(xDataColumn, axis=1)
+            numData = data.select_dtypes(include=["int64", "int32", "float32", "float"])
+            columnsNames = numData.columns.to_list()
+            numData = numData.T.to_numpy()
+            dataList = []
+            for row in numData:
+                rows = []
+                for cell in row:
+                    rows.append(float(cell))
+                dataList.append(rows)
+            dataDict['columns'] = columnsNames
+            dataDict['xName'] = xDataColumn
+            dataDict['data'] = dataList
+            dataDict['xData'] = xData
+        except:
+            return None
+        if dataDict == {}:
+            return None
+        return dataDict

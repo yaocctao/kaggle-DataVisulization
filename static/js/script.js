@@ -861,6 +861,115 @@ Vue.component('chart6', {
         this.getPlot(this.url, this.idPlot, this.chart)
     }
 })
+
+Vue.component('chart7', {
+    template: "<div v-bind:class='classObject'  v-bind:style='{display:show}' :id='\"chart\"+idPlot'>{{msg}}<div :id='idPlot'></div></div>",
+    props: {
+        getPlot: {type: Function},
+        url: {type: String},
+        idPlot: {type: String},
+        msg: {type: String}
+    },
+    data: function () {
+        return {
+            classObject: {
+                box1: false,
+                box2: true,
+                box3: false
+            },
+            index: null,
+            show: 'none',
+        }
+    },
+    methods: {
+        chart: function (id = '7', dataInit) {
+            var chartDom = document.getElementById(id);
+            chartDom.style.width = '100%';
+            chartDom.style.height = '90%';
+
+            if (dataInit !== false) {
+                this.myChart = echarts.init(chartDom, 'purple-passion');
+                var data = dataInit['data']
+                var columnNames = dataInit['columns']
+                var xName = dataInit['xName']
+                var xData = dataInit['xData']
+
+                var series = []
+                var selected = {}
+                for (let i = 0; i < data.length; i++) {
+                    series.push({
+                        name: columnNames[i],
+                        type: 'line',
+                        stack: 'Total',
+                        data: data[i]
+                    })
+                    if (i===0){
+                        selected[[columnNames[i]]]=true
+                    }else
+                    {
+                        selected[[columnNames[i]]]=false
+                    }
+
+                }
+                console.log(selected)
+                option = {
+                    title: {
+                        text: xName
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: columnNames,
+                        selected:selected
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        name: xName,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: xData
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series:series
+                };
+
+                this.myChart.setOption(option);
+                var that = this
+                this.index = this.$parent.pageComponent.length
+                if ((this.index + 1) % 2 === 0) {
+                    this.classObject.box1 = false;
+                    this.classObject.box2 = false;
+                    this.classObject.box3 = true;
+                } else {
+                    this.classObject.box1 = false;
+                    this.classObject.box2 = true;
+                    this.classObject.box3 = false;
+                }
+                this.$parent.pageComponent.push(this)
+                this.myChart.getZr().on('click', function (params) {
+                    that.$emit('trans', that);
+                });
+            }
+
+        }
+    },
+    mounted: function () {
+        this.getPlot(this.url, this.idPlot, this.chart)
+    }
+})
 var body = new Vue(
     {
         el: "#main",

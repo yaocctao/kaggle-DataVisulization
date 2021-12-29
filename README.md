@@ -18,9 +18,9 @@
 <br></div>
 
 
+[toc]
 
-
-###### 实现工具：
+## 实现工具：
 
 - vue（前端）
 - element（前端vue工具包）
@@ -29,9 +29,9 @@
 
  可视化展示如下<img src="./src/Hnet-image.gif" width = "100%" height = "100%" alt="图片名称" align=center />
 
-## idea：
+## Idea：
 
-###### 为什么会想到做这么一个期末答辩的项目呢？
+##### 为什么会想到做这么一个期末答辩的项目呢？
 
 在期中的可视化项目中制作了一个疫情大屏的展示图，当时通过爬虫和flask以及pyecharts进行开发，最终实现了如下的实时疫情效果展示大屏，但是，当时的项目有还是有很大的局限性，也就是说我是针对具体的某个数据对其进行处理的，当爬虫网页的api一进行更换那么我的前端可视化就会直接崩溃。
 
@@ -135,7 +135,7 @@ pipeline总共分为两个部分前端部分和后端数据处理部分
 
 统计数据的信息，列如各列空值，总数，绘制饼图进行展示
 
-## animate
+## Animate
 
 动画效果的实现通过jQuery的animate方法实现
 
@@ -143,7 +143,7 @@ pipeline总共分为两个部分前端部分和后端数据处理部分
 
 实现方法很简单，通过点击对应的子组件的box会触发一个emit给父组件main，父组件在接受到这个事件后会执行将父组件中的show属性中存储的主视图的box取出，然后和发出信息的子组件进行对调，首先是对调它们的class也就是样式box的大小，然后通过animate实现位置的动画移动
 
-## pagination
+## Pagination
 
 采用Element组件实现，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库
 
@@ -153,7 +153,7 @@ pipeline总共分为两个部分前端部分和后端数据处理部分
 
 **注意**：由于点击动画的事件会更改pageComponent列表中的chart，因此我们需要在进行主视图和侧边栏切换时通过而外的操作来更新pageComponent列表内容和showComponent内容。
 
-## upload file
+## Upload File
 
 <img src="./src/Hnet-image1.gif" width = "100%" height = "100%" alt="图片名称" align=center />
 
@@ -206,7 +206,92 @@ this.$loading.close()
 
 将绘制的每个图表异步进行，将先绘制好的图表存储在对应的pageComponent中main父组件会定时的查看pageComponent中的图表在满足最低的呈现3个图表的要求后立即将图表呈现到前端，同时将pageComponent的length作为图表总数绑定到el-pagination标签中的total变量中实时更新页数。实现异步处理数据
 
-## bug fix log
+## Run
+
+使用教程：
+
+开箱即用
+
+pip安装好需要的环境包后
+
+- flask
+- pandas
+- numpy
+- xlrd
+
+直接python main.py运行
+
+## 快速添加自定义图例
+
+
+
+## Docker 一键式快速部署
+
+修改项目中的`url`
+
+###### 在main.html中
+
+```js
+    <el-upload
+            class="upload-demo"
+            drag
+            {#            修改成自己的url地址#}
+            action="<your url>/upload"
+            multiple style="position:absolute;bottom: 40%;left: 40%"
+            :on-success="handleAvatarSuccess">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div slot="tip" class="el-upload__tip" style="position:absolute;top:1%; left: 5%; color:white">只能上传csv/xlsx文件</div>
+    </el-upload>
+```
+
+###### 在script中
+
+```js
+....... 
+methods: {
+handleAvatarSuccess(){
+window.location.href="<your url>";
+},
+.......
+```
+
+###### 在index.html中
+
+```js
+<chart1 @trans="transform" id-plot="1" :get-plot="getPlot" url=<your url>/frequency"
+            msg="各列top1数据占比(字符串类型)">
+    </chart1>
+
+    <chart2 @trans="transform" id-plot="2" :get-plot="getPlot" url="<your url>/distribute" msg="数据分布">
+    </chart2>
+
+    <chart3 @trans="transform" id-plot="3" :get-plot="getPlot" url="<your url>/dataset_3d_chart"
+            msg="数据集3d分布展示">
+    </chart3>
+
+    <chart4 @trans="transform" id-plot="4" :get-plot="getPlot" url="<your url>/info" msg="数据信息展示">
+    </chart4>
+
+    <chart5 @trans="transform" id-plot="5" :get-plot="getPlot" url="<your url>/boxplot" msg="数据各列箱型图展示">
+    </chart5>
+
+    <chart6 @trans="transform" id-plot="6" :get-plot="getPlot" url="<your url>/parallelPlot" msg="平行图数据展示">
+    </chart6>
+
+    <chart7 @trans="transform" id-plot="7" :get-plot="getPlot" url="<your url>/line" msg="key键不同列数据展示">
+    </chart7>
+```
+
+需要修改
+
+`docker run -itd -p <主机端口>:<ssh端口默认22> -p <主机端口>:<flask默认端口5000> -v <主机项目路径>:<容器挂载路径> -w <工作路径，需和挂载路径一致> --name <容器名字>  <镜像名> python main.py`
+
+例如：
+
+`docker run -itd -p 122:22 -p 8787:8787 -v /home/yaocctao/kaggle-DataVisulization:/dataVisualization -w /dataVisualization --name visualization  222.198.0.4:5000/data_visualization python main.py`
+
+## Bug Fix Log
 
 - flask与vue.js的语法冲突，解决方法：修改flask前端变量语法{{}}为[[]]
 - vue显示echarts问题，通过将方法在mount中调用实现，原因是需要vue先creat对应的echarts画图的dom后才可以
