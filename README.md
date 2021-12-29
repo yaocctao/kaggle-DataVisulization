@@ -393,7 +393,10 @@ def line():
 ## Docker 一键式快速部署
 
 修改项目中的`url`
-
+###### 在main.pyt中
+```python
+    app.run(debug=True,host='<your url>',port='<your port 默认5000>')
+```
 ###### 在main.html中
 
 ```js
@@ -451,7 +454,7 @@ window.location.href="<your url>";
 需要修改
 
 `docker run -itd -p <主机端口>:<ssh端口默认22> -p <主机端口>:<flask默认端口5000> -v <主机项目路径>:<容器挂载路径> -w <工作路径，需和挂载路径一致> --name <容器名字>  <镜像名> python main.py`
-
+其中镜像要求python 3.7 并且满足上述的项目运行环境
 例如：
 
 `docker run -itd -p 122:22 -p 8787:8787 -v /home/yaocctao/kaggle-DataVisulization:/dataVisualization -w /dataVisualization --name visualization  222.198.0.4:5000/data_visualization python main.py`
