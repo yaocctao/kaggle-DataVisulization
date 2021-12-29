@@ -17,9 +17,6 @@
 <a href="https://github.com/yaocctao/kaggle-DataVisulization/issues"><img src="https://img.shields.io/github/issues/yaocctao/kaggle-DataVisulization" alt="Issues Badge"/></a>
 <br></div>
 
-
-[toc]
-
 ## 实现工具：
 
 - vue（前端）
